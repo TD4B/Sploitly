@@ -4,7 +4,6 @@ import nmap
 import sys
 import re
 
-#CLI Colors
 class term:
     @staticmethod
     def blue(value):
@@ -63,20 +62,32 @@ for i in ports:
     elif 443 in ports:
         protocol.web = 'https'
 
+def prompt_scanlvl():
+    print term.green("[*] Select Web Scan Level (1-2)")
+    print term.green("[*] Option 1 Spawns a Web craweler.")
+    print term.green("[*] Option 2 does a vulerability scan.")
+
+# Web Application Enumeration Scans.
+
 if protocol.web == 'http':
     i = raw_input(term.bold(term.warn("[WARNING] No SSL/TLS available for web scan, continue with HTTP? [y/n] ")))
     if 'Y' == i.upper():
-        print term.blue("[*] Select Web Scan Level (1-2)")
-        print term.blue("[*] 1 = Light URL Scan/Spider.")
-        print term.blue("[*] 2 = Deep Vulnerability Scan.")
-        i = raw_input(term.bold(term.blue("[*] Enter in Scan Level: ")))
+        prompt_scanlvl()
+        i = raw_input(term.bold(term.green("[*] Enter in Scan Level: ")))
     else:
         print term.fail("[*] Exiting...")
         sys.exit()
 
 if protocol.web == 'https':
-    print term.warn("[WARNING] Although more secure, Network could detect attack/scan via SSL Offload or WAF, continue? Y/N")
+    i = raw_input(term.green("[HTTPS] Secure Socket Layer Scan available, continue [y/n]?"))    
+    if 'Y' == i.upper():
+        prompt_scanlvl()
+        i = raw_input(term.bold(term.green("[*] Enter in Scan Level: ")))
+    else:
+        print term.fail("[*] Exiting...")
+        sys.exit()
 
+# Protocol Layer Enumeration scans.
 
 def switch(x):
     return {
