@@ -22,6 +22,7 @@ class term:
     def bold(value):
         return '\033[1m' + value + '\033[0m'
 
+
 class protocol:
     def web(self):
         self.value = value
@@ -60,7 +61,7 @@ for i in ports:
     if 80 in ports:
         protocol.web = 'http'
     # defaults to 443 for the web scanner.
-    elif 443 in ports:
+    if 443 in ports:
         protocol.web = 'https'
 
 # Web Application Enumeration Scans.
@@ -83,30 +84,42 @@ def web_scanner(type):
     f.close()
 
 
+# Call web enumeration scripts pending on detected protocols available.
 if protocol.web == 'http':
-    i = raw_input(term.bold(term.warn("[WARNING] No SSL/TLS available for web scan, continue with HTTP? [y/n] ")))
+    i = raw_input(term.bold(term.warn("[WARNING] No SSL/TLS available for web scan, continue with HTTP? [y/n/s] (s = skip) ")))
     if 'Y' == i.upper():
         web_scanner(protocol.web)
+    if 'S' == i.upper():
+        'continue'
     else:
         print term.fail("[*] Exiting...")
         sys.exit()
 
 if protocol.web == 'https':
-    i = raw_input(term.green("[HTTPS] Secure Socket Layer Scan available, continue [y/n]?"))    
+    i = raw_input(term.green("[HTTPS] Secure Socket Layer Scan available, continue [y/n/s] (s = skip)?"))    
     if 'Y' == i.upper():
         web_scanner(protocol.web)
+    if 'S' == i.upper():
+        'continue'
     else:
         print term.fail("[*] Exiting...")
         sys.exit()
 
-# Protocol Layer Enumeration scans.
+print term.blue("[*] Web Enumeration Stage completed.")
 
-def switch(x):
-    return {
-        '135':'tool',
-        '139':'tool',
-        '445':'tool',
-    }.get(x,0)
+# Rest of the script procedures can be called via switching statement.
 
+def enum4linux():
+    output = subprocess.check_output(["enum4linux " + sys.argv[1]],shell=True)
+    print term.green("[*] Writing RPC,SMB,NetBios Enumeration results to file...")
+    f = open("enumdom_info.txt","w")
+    f.write(output)
+    f.close()
+
+for i in ports:
+    if i in [111,139,445]:
+        print term.green("[*] Enumerating Windows/Samba Services...")
+        enum4linux()
+        break
 
 
