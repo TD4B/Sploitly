@@ -3,6 +3,7 @@
 import nmap
 import sys
 import re
+import subprocess
 
 class term:
     @staticmethod
@@ -62,18 +63,30 @@ for i in ports:
     elif 443 in ports:
         protocol.web = 'https'
 
-def prompt_scanlvl():
-    print term.green("[*] Select Web Scan Level (1-2)")
-    print term.green("[*] Option 1 Spawns a Web craweler.")
-    print term.green("[*] Option 2 does a vulerability scan.")
-
 # Web Application Enumeration Scans.
+
+def web_scanner(type):
+    print term.blue("[*] Running Nikto Scan, this may take a while..")
+    output = subprocess.check_output(["nikto --host " + type + "://" + sys.argv[1]],shell=True)
+    outputs = output.split("\n")
+    for lines in outputs:
+        if 'Server:' in lines:
+            server_info = lines
+    print term.green("[*] Got Server Info!")
+    print term.green("[*] " + server_info)
+    print term.green("[*] Nikto Scan Complete.. writing data to file..Results.txt")
+    f = open("Results.txt","w")
+    f.write("### Open Ports ###\n")
+    f.write(str(ports))
+    f.write("\n### Web Scan Results ###\n")
+    f.write(str(output))
+    f.close()
+
 
 if protocol.web == 'http':
     i = raw_input(term.bold(term.warn("[WARNING] No SSL/TLS available for web scan, continue with HTTP? [y/n] ")))
     if 'Y' == i.upper():
-        prompt_scanlvl()
-        i = raw_input(term.bold(term.green("[*] Enter in Scan Level: ")))
+        web_scanner(protocol.web)
     else:
         print term.fail("[*] Exiting...")
         sys.exit()
@@ -81,8 +94,7 @@ if protocol.web == 'http':
 if protocol.web == 'https':
     i = raw_input(term.green("[HTTPS] Secure Socket Layer Scan available, continue [y/n]?"))    
     if 'Y' == i.upper():
-        prompt_scanlvl()
-        i = raw_input(term.bold(term.green("[*] Enter in Scan Level: ")))
+        web_scanner(protocol.web)
     else:
         print term.fail("[*] Exiting...")
         sys.exit()
