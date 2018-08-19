@@ -8,7 +8,7 @@ I have written this script primarily as a means to make my exploitation process 
 
 ```
 Requirements ->
-Nikto, you should be running this from Kali Linux.
+Nikto & enum4linux... you should be running this from Kali Linux!
 Install ->
 git clone https://github.com/TD4B/Sploitly
 cd /Sploitly
