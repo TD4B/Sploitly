@@ -77,8 +77,8 @@ def web_scanner(type):
     print term.green("[*] Nikto Scan Complete.. writing data to file..Results.txt")
     f = open("Results.txt","w")
     f.write("### Open Ports ###\n")
-    f.write(str(ports))
-    f.write("\n### Web Scan Results ###\n")
+    f.write(str(ports) + "\n")
+    f.write("### Web Scan Results ###\n")
     f.write(str(output))
     f.close()
 
