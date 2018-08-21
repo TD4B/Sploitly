@@ -1,8 +1,6 @@
-This is a simple script intended to automatically enumerate and gather more information about a target
-we are already interested in over the network.
+This is a simple script intended to automatically enumerate and gather information about a target.
 
-The script automate(s) the first stages of information gathering, enumeration as well as fingerprinting/probing and then outputs the data 
-to a file for reading.
+The script automate(s) the first stages of information gathering, enumeration as well as fingerprinting/probing and then outputs the data to a file for reading.
 
 ```
 Requirements ->
